@@ -16,6 +16,11 @@ const PORT = process.env.PORT || 5000
 app.use(cors())
 app.use(express.json())
 
+// Serve static files from the React app build directory
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(join(__dirname, 'dist')))
+}
+
 // MongoDB Models
 const playerSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
@@ -176,6 +181,15 @@ async function updatePlayerRatings(match) {
 }
 
 // API Routes
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    message: 'Badminton Tracker API is running',
+    timestamp: new Date().toISOString()
+  })
+})
+
 app.get('/api/players', async (req, res) => {
   try {
     const players = await Player.find().sort({ eloRating: -1 })
@@ -219,6 +233,13 @@ app.post('/api/matches', async (req, res) => {
     res.status(400).json({ error: error.message })
   }
 })
+
+// Serve React app for all non-API routes (production only)
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(join(__dirname, 'dist', 'index.html'))
+  })
+}
 
 // Connect to MongoDB and start server
 mongoose.connect(process.env.MONGODB_URI)
