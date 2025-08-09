@@ -1,7 +1,7 @@
 .leaderboard {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 0.1rem;
   overflow: hidden; /* Prevent horizontal overflow */
 }
 
@@ -92,7 +92,7 @@
 }
 
 .leaderboard-table td {
-  padding: 1rem;
+  padding: 0.5rem;
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
 }
