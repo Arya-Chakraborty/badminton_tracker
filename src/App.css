@@ -108,6 +108,8 @@ body {
 /* Form Styles */
 .form-group {
   margin-bottom: 1.5rem;
+  position: relative;
+  min-width: 0; /* Allow flex items to shrink */
 }
 
 .form-label {
@@ -119,6 +121,7 @@ body {
 
 .form-input, .form-select {
   width: 100%;
+  max-width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
@@ -126,6 +129,22 @@ body {
   color: var(--text-primary);
   font-size: 1rem;
   transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-select {
+  padding-right: 2.5rem; /* Space for dropdown arrow */
+  cursor: pointer;
+}
+
+/* Style dropdown options */
+.form-select option {
+  padding: 0.5rem;
+  background-color: var(--accent-bg);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .form-input:focus, .form-select:focus {

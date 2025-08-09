@@ -1,6 +1,7 @@
 .registration {
   max-width: 600px;
   margin: 0 auto;
+  overflow: hidden; /* Prevent horizontal overflow */
 }
 
 .registration-container {
@@ -22,6 +23,27 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+}
+
+/* Fix dropdown container overflow */
+.form-group {
+  position: relative;
+  min-width: 0; /* Allow flex items to shrink */
+}
+
+.form-select {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  /* Ensure dropdown arrow stays visible */
+  padding-right: 2.5rem;
+}
+
+/* Custom dropdown styling to prevent overflow */
+.form-select option {
+  padding: 0.5rem;
+  background-color: var(--accent-bg);
+  color: var(--text-primary);
 }
 
 .submit-btn {
@@ -61,5 +83,19 @@
   
   .registration {
     margin: 0 1rem;
+  }
+  
+  .form-group {
+    width: 100%;
+  }
+  
+  .form-select {
+    max-width: 100%;
+  }
+  
+  /* Ensure dropdown options are readable on mobile */
+  .form-select option {
+    font-size: 1rem;
+    padding: 0.75rem;
   }
 }
