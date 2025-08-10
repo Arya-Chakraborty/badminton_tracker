@@ -9,7 +9,9 @@ function Registration({ onAddPlayer }) {
   })
   
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitMessage, setSubmitMessage] = useState('')
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [userExists, setUserExists] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleChange = (e) => {
     setFormData({
@@ -22,33 +24,46 @@ function Registration({ onAddPlayer }) {
     e.preventDefault()
     
     if (!formData.firstName.trim() || !formData.lastName.trim()) {
-      setSubmitMessage('Please fill in all required fields.')
+      setErrorMessage('Please fill in all required fields.')
       return
     }
     
     setIsSubmitting(true)
+    setErrorMessage('')
+    setUserExists(false)
     
     try {
       const result = await onAddPlayer(formData)
       
       if (result.success) {
-        setSubmitMessage('Player registered successfully!')
+        setIsSuccess(true)
         setFormData({
           firstName: '',
           lastName: '',
           company: 'Ericsson'
         })
+        // Reset success state after 3 seconds
+        setTimeout(() => {
+          setIsSuccess(false)
+          setIsSubmitting(false)
+        }, 3000)
       } else {
-        setSubmitMessage(result.error || 'Error registering player. Please try again.')
+        if (result.error && result.error.includes('already registered')) {
+          setUserExists(true)
+          // Reset user exists state after 3 seconds
+          setTimeout(() => {
+            setUserExists(false)
+            setIsSubmitting(false)
+          }, 3000)
+        } else {
+          setErrorMessage(result.error || 'Error registering player. Please try again.')
+          setIsSubmitting(false)
+        }
       }
     } catch (error) {
-      setSubmitMessage('Error registering player. Please try again.')
+      setErrorMessage('Error registering player. Please try again.')
+      setIsSubmitting(false)
     }
-    
-    setIsSubmitting(false)
-    
-    // Clear message after 3 seconds
-    setTimeout(() => setSubmitMessage(''), 3000)
   }
 
   return (
@@ -117,15 +132,17 @@ function Registration({ onAddPlayer }) {
             
             <button 
               type="submit" 
-              className="btn btn-primary btn-large submit-btn"
-              disabled={isSubmitting}
+              className={`btn btn-large submit-btn ${isSuccess ? 'btn-success' : userExists ? 'btn-warning' : 'btn-primary'}`}
+              disabled={isSubmitting || isSuccess || userExists}
             >
-              {isSubmitting ? 'Registering...' : 'Register Player'}
+              {isSuccess ? 'Registration Successful ✓' : 
+               userExists ? 'User Already Exists ⚠️' : 
+               isSubmitting ? 'Registering...' : 'Register Player'}
             </button>
             
-            {submitMessage && (
-              <div className={`submit-message ${submitMessage.includes('Error') ? 'error' : 'success'}`}>
-                {submitMessage}
+            {errorMessage && (
+              <div className="submit-message error">
+                {errorMessage}
               </div>
             )}
           </form>

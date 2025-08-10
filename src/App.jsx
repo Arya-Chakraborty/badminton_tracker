@@ -5,6 +5,7 @@ import HomePage from './components/HomePage'
 import Registration from './components/Registration'
 import Leaderboard from './components/Leaderboard'
 import InsertDetails from './components/InsertDetails'
+import Matches from './components/Matches'
 import Navbar from './components/Navbar'
 import './App.css'
 
@@ -66,7 +67,11 @@ function App() {
       return { success: true, player: newPlayer }
     } catch (err) {
       console.error('Error adding player:', err)
-      return { success: false, error: 'Failed to add player. Please try again.' }
+      
+      // Extract error message from axios error response
+      const errorMessage = err.response?.data?.error || 'Failed to add player. Please try again.'
+      
+      return { success: false, error: errorMessage }
     }
   }
 
@@ -120,6 +125,7 @@ function App() {
             <Route path="/registration" element={<Registration onAddPlayer={addPlayer} />} />
             <Route path="/leaderboard" element={<Leaderboard players={players} />} />
             <Route path="/insert-details" element={<InsertDetails players={players} onAddMatch={addMatch} />} />
+            <Route path="/matches" element={<Matches />} />
           </Routes>
         </main>
       </div>

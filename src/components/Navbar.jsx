@@ -13,6 +13,7 @@ function Navbar() {
           <Link to="/registration" className="nav-link">Registration</Link>
           <Link to="/leaderboard" className="nav-link">Leaderboard</Link>
           <Link to="/insert-details" className="nav-link">Insert Details</Link>
+          <Link to="/matches" className="nav-link">Matches</Link>
         </div>
       </div>
     </nav>

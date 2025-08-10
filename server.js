@@ -201,6 +201,21 @@ app.get('/api/players', async (req, res) => {
 
 app.post('/api/players', async (req, res) => {
   try {
+    const { firstName, lastName, company } = req.body
+    
+    // Check if player already exists with same first name, last name, and company
+    const existingPlayer = await Player.findOne({
+      firstName: { $regex: new RegExp(`^${firstName}$`, 'i') },
+      lastName: { $regex: new RegExp(`^${lastName}$`, 'i') },
+      company: company
+    })
+    
+    if (existingPlayer) {
+      return res.status(400).json({ 
+        error: 'Player already registered with this name and company.' 
+      })
+    }
+    
     const player = new Player(req.body)
     await player.save()
     res.status(201).json(player)
@@ -214,8 +229,22 @@ app.get('/api/matches', async (req, res) => {
     const matches = await Match.find()
       .populate('teamA.player1 teamA.player2 teamB.player1 teamB.player2')
       .sort({ date: -1 })
-    res.json(matches)
+    
+    // Transform the data to match the frontend expectations
+    const transformedMatches = matches.map(match => ({
+      _id: match._id,
+      team1Player1: match.teamA.player1 ? `${match.teamA.player1.firstName} ${match.teamA.player1.lastName}` : 'Unknown',
+      team1Player2: match.teamA.player2 ? `${match.teamA.player2.firstName} ${match.teamA.player2.lastName}` : 'Unknown',
+      team2Player1: match.teamB.player1 ? `${match.teamB.player1.firstName} ${match.teamB.player1.lastName}` : 'Unknown',
+      team2Player2: match.teamB.player2 ? `${match.teamB.player2.firstName} ${match.teamB.player2.lastName}` : 'Unknown',
+      team1Score: match.teamAScore,
+      team2Score: match.teamBScore,
+      createdAt: match.date
+    }))
+    
+    res.json(transformedMatches)
   } catch (error) {
+    console.error('Error fetching matches:', error)
     res.status(500).json({ error: error.message })
   }
 })

@@ -69,6 +69,24 @@ body {
   transform: translateY(-1px);
 }
 
+.btn-success {
+  background-color: var(--success);
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: var(--success);
+}
+
+.btn-warning {
+  background-color: var(--warning);
+  color: white;
+}
+
+.btn-warning:hover {
+  background-color: var(--warning);
+}
+
 .btn-secondary {
   background-color: var(--accent-bg);
   color: var(--text-primary);

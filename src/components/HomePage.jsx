@@ -26,6 +26,11 @@ function HomePage() {
           <span className="btn-icon">📝</span>
           Insert Match Details
         </Link>
+        
+        <Link to="/matches" className="btn btn-primary btn-large">
+          <span className="btn-icon">🏸</span>
+          Matches
+        </Link>
       </div>
       
     </div>
